@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dr. Ajai Chowdhry — QNu 10th Anniversary</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #F5EDD8;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    :root {
+      --bg:       #F5EDD8;
+      --panel:    #EDE0C4;
+      --dark:     #2C2010;
+      --gold:     #8B6200;
+      --gold-mid: #C4A020;
+      --teal:     #3D6B5A;
+      --divider:  #C8A84A;
+      --text:     #1E1608;
+      --sub:      #6B4F1A;
+    }
+
+    /* ── BG VIDEO ─────────────────────────────────────────── */
+    #bg-video {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      z-index: 0;
+    }
+    #bg-video.visible { opacity: 0.13; }
+
+    /* ════════════════════════════════════════════════════════
+       ACT 1 — LOGO SWOOSH
+    ════════════════════════════════════════════════════════ */
+    #act1 {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: #F5EDD8;
+      z-index: 100;
+      transition: opacity 1s ease;
+    }
+    #act1.hidden { opacity: 0; pointer-events: none; }
+
+    #logo-center {
+      width: 480px;
+      opacity: 0;
+      transform: translateX(110vw) rotate(8deg);
+      transition: transform 0.9s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease;
+    }
+    #logo-center.swoosh-in  { transform: translateX(0) rotate(0deg); opacity: 1; }
+    #logo-center.swoosh-out { transform: scale(1.15); opacity: 0;
+                               transition: transform 0.8s ease, opacity 0.8s ease; }
+
+    /* ════════════════════════════════════════════════════════
+       ACT 2 — NAME REVEAL
+    ════════════════════════════════════════════════════════ */
+    #act2 {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #F5EDD8;
+      z-index: 90;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+    #act2.visible  { opacity: 1; pointer-events: auto; }
+    #act2.fade-out { opacity: 0; pointer-events: none; }
+
+    #act2-name {
+      font-size: clamp(48px, 7vw, 90px);
+      font-weight: 800; color: var(--dark);
+      letter-spacing: 0.06em; text-align: center;
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #act2-name.in { opacity: 1; transform: translateY(0); }
+
+    #act2-divider {
+      width: 0; height: 3px;
+      background: var(--divider); margin: 18px auto;
+      transition: width 0.8s ease 0.3s;
+    }
+    #act2-divider.in { width: 420px; }
+
+    #act2-title1, #act2-title2 {
+      font-size: clamp(13px, 1.4vw, 20px);
+      font-weight: 500; color: var(--gold);
+      letter-spacing: 0.18em; text-align: center;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #act2-title1.in { opacity:1; transform:translateY(0); transition-delay:0.5s; }
+    #act2-title2.in { opacity:1; transform:translateY(0); transition-delay:0.75s; }
+
+    /* ════════════════════════════════════════════════════════
+       ACT 3 — MAIN SCREEN
+    ════════════════════════════════════════════════════════ */
+    #act3 {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      z-index: 80;
+      opacity: 0; pointer-events: none;
+      transition: opacity 1s ease;
+    }
+    #act3.visible { opacity: 1; pointer-events: auto; }
+
+    /* ── HEADER ───────────────────────────────────────────── */
+    #header {
+      display: flex; align-items: center; gap: 24px;
+      background: rgba(237,224,196,0.96);
+      border-bottom: 3px solid var(--divider);
+      padding: 10px 28px; flex-shrink: 0;
+      opacity: 0; transform: translateY(-20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #header.in { opacity: 1; transform: translateY(0); }
+
+    #header-logo {
+      width: 180px; flex-shrink: 0;
+      opacity: 0; transition: opacity 0.5s ease 0.2s;
+    }
+    #header-logo.in { opacity: 1; }
+
+    #header-vline { width: 2px; height: 52px; background: var(--divider); flex-shrink: 0; }
+
+    #header-name {
+      font-size: clamp(22px, 3.2vw, 42px);
+      font-weight: 800; color: var(--dark); letter-spacing: 0.05em; line-height: 1;
+    }
+    #header-sub {
+      font-size: clamp(10px, 1vw, 14px);
+      color: var(--gold); letter-spacing: 0.16em; font-weight: 500; margin-top: 5px;
+    }
+
+    /* ── BODY GRID ────────────────────────────────────────── */
+    #body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+      padding: 12px 20px;
+      min-height: 0;
+    }
+
+    /* ── PHOTO CARDS ──────────────────────────────────────── */
+    .photo-card {
+      position: relative; border-radius: 10px; overflow: hidden;
+      background: var(--panel); border: 1px solid #D6C49A;
+      opacity: 0; transform: scale(0.88);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .photo-card.in { opacity: 1; transform: scale(1); }
+    .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-card .caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(44,32,16,0.82); color: #F5EDD8;
+      font-size: clamp(8px, 0.7vw, 11px); font-weight: 600;
+      letter-spacing: 0.08em; padding: 6px 10px; text-align: center;
+    }
+
+    #photo-portrait  { grid-column: 1; grid-row: 1 / 3; transition-delay: 0.1s; }
+    #photo-president { grid-column: 3; grid-row: 1;      transition-delay: 0.5s; }
+    #photo-modi      { grid-column: 3; grid-row: 2;      transition-delay: 0.9s; }
+
+    /* ── QUOTE SLOTS ──────────────────────────────────────── */
+    /* Each slot is a fixed position in the grid.
+       Inside each slot, individual quotes fade in/out via JS. */
+    .quote-slot {
+      position: relative;
+      border-radius: 10px; border: 1px solid #D6C49A;
+      overflow: hidden;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .quote-slot.in { opacity: 1; transform: translateY(0); }
+
+    #slot1 { grid-column: 2; grid-row: 1; transition-delay: 0.3s; }
+    #slot2 { grid-column: 2; grid-row: 2; transition-delay: 0.6s; }
+
+    /* Individual quote panels inside each slot */
+    .q-panel {
+      position: absolute; inset: 0;
+      background: rgba(249,243,230,0.93);
+      padding: 18px 20px 18px 22px;
+      display: flex; flex-direction: column; justify-content: center; gap: 10px;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+    }
+    .q-panel.active { opacity: 1; }
+
+    .q-bar {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 2px 0 0 2px;
+    }
+    .bar-teal   { background: var(--teal); }
+    .bar-gold   { background: var(--gold-mid); }
+    .bar-brown  { background: #8B5A2B; }
+    .bar-dark   { background: var(--dark); }
+
+    .q-text {
+      font-size: clamp(10px, 1.05vw, 15px);
+      color: var(--text); line-height: 1.58; font-style: italic;
+    }
+    .q-source {
+      font-size: clamp(8px, 0.68vw, 11px);
+      color: var(--sub); font-weight: 600; letter-spacing: 0.04em;
+    }
+
+    /* ── TICKER ───────────────────────────────────────────── */
+    #ticker {
+      background: var(--gold); padding: 6px 0;
+      overflow: hidden; flex-shrink: 0;
+      opacity: 0; transition: opacity 0.6s ease;
+    }
+    #ticker.in { opacity: 1; }
+
+    #ticker-inner {
+      display: flex; white-space: nowrap;
+      animation: scroll-ticker 30s linear infinite;
+    }
+    @keyframes scroll-ticker {
+      0%   { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+    #ticker-inner span {
+      font-size: clamp(10px, 0.9vw, 13px); color: #F5EDD8;
+      font-weight: 600; letter-spacing: 0.06em; padding: 0 28px;
+    }
+    #ticker-inner .dot { color: rgba(245,237,216,0.45); padding: 0 4px; font-weight: 300; }
+
+  </style>
+</head>
+<body>
+
+<video id="bg-video" autoplay muted loop playsinline>
+  <source src="bg-video.mp4" type="video/mp4" />
+</video>
+
+<!-- ACT 1: LOGO SWOOSH -->
+<div id="act1">
+  <img id="logo-center" src="logo.png" alt="QNu 10th Anniversary" />
+</div>
+
+<!-- ACT 2: NAME REVEAL -->
+<div id="act2">
+  <div id="act2-name">DR. AJAI CHOWDHRY</div>
+  <div id="act2-divider"></div>
+  <div id="act2-title1">FATHER OF INDIAN HARDWARE</div>
+  <div id="act2-title2">PADMA BHUSHAN 2011 &nbsp;·&nbsp; CHAIRMAN, NATIONAL QUANTUM MISSION OF INDIA</div>
+</div>
+
+<!-- ACT 3: MAIN SCREEN -->
+<div id="act3">
+
+  <!-- HEADER -->
+  <div id="header">
+    <img id="header-logo" src="logo.png" alt="QNu 10th Anniversary" />
+    <div id="header-vline"></div>
+    <div>
+      <div id="header-name">DR. AJAI CHOWDHRY</div>
+      <div id="header-sub">FATHER OF INDIAN HARDWARE &nbsp;·&nbsp; PADMA BHUSHAN 2011 &nbsp;·&nbsp; CHAIRMAN, NATIONAL QUANTUM MISSION OF INDIA</div>
+    </div>
+  </div>
+
+  <!-- BODY GRID -->
+  <div id="body">
+
+    <!-- Portrait — spans full left column -->
+    <div class="photo-card" id="photo-portrait">
+      <img src="photo-portrait.png" alt="Dr. Ajai Chowdhry" />
+    </div>
+
+    <!-- QUOTE SLOT 1 — top centre -->
+    <div class="quote-slot" id="slot1">
+      <!-- Q1 -->
+      <div class="q-panel" id="q1">
+        <div class="q-bar bar-teal"></div>
+        <p class="q-text">"If we implement quantum key distribution in the country early, we will be quantum secure. Because if a quantum threat comes around, we will not have a situation of our financial systems going down, our electric grids going down. So, the first step is to prevent an attack on India's critical infrastructure."</p>
+        <p class="q-source">BS Manthan Summit · Business Standard · February 28, 2025</p>
+      </div>
+      <!-- Q3 (rotates in after Q1) -->
+      <div class="q-panel" id="q3">
+        <div class="q-bar bar-brown"></div>
+        <p class="q-text">"Human brain is phenomenal. It cannot be beaten because it's got billions of neurons inside our brain. The computers are far away from that. Today, even when quantum computing comes in, it is going to be far away. There is one particular area which AI cannot do — emotions."</p>
+        <p class="q-source">ANI Podcast with Smita Prakash · October 2025</p>
+      </div>
+    </div>
+
+    <!-- President photo — right top -->
+    <div class="photo-card" id="photo-president">
+      <img src="photo-president.png" alt="Padma Bhushan Ceremony 2011" />
+      <div class="caption">PADMA BHUSHAN · WITH PRESIDENT SMT. PRATIBHA DEVISINGH PATIL · 2011</div>
+    </div>
+
+    <!-- QUOTE SLOT 2 — bottom centre -->
+    <div class="quote-slot" id="slot2">
+      <!-- Q2 -->
+      <div class="q-panel" id="q2">
+        <div class="q-bar bar-gold"></div>
+        <p class="q-text">"We are no longer talking about writing papers. We are now talking about making products. There are targets for making products in every part of the machine."</p>
+        <p class="q-source">BS Manthan Summit · Business Standard · February 28, 2025</p>
+      </div>
+      <!-- Q4 (rotates in after Q2) -->
+      <div class="q-panel" id="q4">
+        <div class="q-bar bar-dark"></div>
+        <p class="q-text">"A is greater than R — if you have Aspiration, Resources will happen."</p>
+        <p class="q-source">Just Aspire · HarperCollins 2023</p>
+      </div>
+    </div>
+
+    <!-- Modi award photo — right bottom -->
+    <div class="photo-card" id="photo-modi">
+      <img src="photo-modi.png" alt="Cybermedia ICT Award 2014" />
+      <div class="caption">CYBERMEDIA LIFETIME ACHIEVEMENT · PRESENTED BY SHRI NARENDRA MODI · 2014</div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- TICKER -->
+  <div id="ticker">
+    <div id="ticker-inner">
+      <span>QNu QUANTUM</span><span class="dot">·</span>
+      <span>10TH ANNIVERSARY</span><span class="dot">·</span>
+      <span>Padma Bhushan 2011</span><span class="dot">·</span>
+      <span>Chairman, National Quantum Mission of India</span><span class="dot">·</span>
+      <span>CNBC Innovator of the Year 2010</span><span class="dot">·</span>
+      <span>Lifetime Achievement Award — presented by Shri Narendra Modi, 2014</span><span class="dot">·</span>
+      <span>Author: Just Aspire · HarperCollins 2023</span><span class="dot">·</span>
+      <span>Co-Founder, EPIC Foundation</span><span class="dot">·</span>
+      <span>IIT Hyderabad · IIT Patna · IIIT Naya Raipur</span><span class="dot">·</span>
+      <span>Distinguished Fellow, NITI Aayog</span><span class="dot">·</span>
+      <span>QNu QUANTUM · 10TH ANNIVERSARY</span>
+    </div>
+  </div>
+
+</div><!-- /act3 -->
+
+<script>
+// ── ALL 4 QUOTES DATA (for rotation after 12s) ─────────────
+const quotes = [
+  {
+    slot: 'slot1',
+    panels: ['q1', 'q3'],
+    current: 0
+  },
+  {
+    slot: 'slot2',
+    panels: ['q2', 'q4'],
+    current: 0
+  }
+];
+
+function after(ms, fn) { setTimeout(fn, ms); }
+
+const act1       = document.getElementById('act1');
+const act2       = document.getElementById('act2');
+const act3       = document.getElementById('act3');
+const bgVideo    = document.getElementById('bg-video');
+const logoCenter = document.getElementById('logo-center');
+const ticker     = document.getElementById('ticker');
+
+// ── ACT 1: Logo swooshes in at 0.3s ───────────────────────
+after(300, () => logoCenter.classList.add('swoosh-in'));
+
+// ── At 3s: logo out, bg video in, Act 2 in ────────────────
+after(3000, () => {
+  logoCenter.classList.add('swoosh-out');
+  bgVideo.classList.add('visible');
+
+  after(500, () => {
+    act1.classList.add('hidden');
+    act2.classList.add('visible');
+    after(200, () => document.getElementById('act2-name').classList.add('in'));
+    after(400, () => document.getElementById('act2-divider').classList.add('in'));
+    after(700, () => document.getElementById('act2-title1').classList.add('in'));
+    after(950, () => document.getElementById('act2-title2').classList.add('in'));
+  });
+});
+
+// ── At 6.5s: Act 2 → Act 3 ────────────────────────────────
+after(6500, () => {
+  act2.classList.add('fade-out');
+
+  after(800, () => {
+    act2.style.display = 'none';
+    act3.classList.add('visible');
+
+    // Header in
+    after(100, () => {
+      document.getElementById('header').classList.add('in');
+      document.getElementById('header-logo').classList.add('in');
+    });
+
+    // Photos land staggered
+    after(400,  () => document.getElementById('photo-portrait').classList.add('in'));
+    after(900,  () => document.getElementById('photo-president').classList.add('in'));
+    after(1400, () => document.getElementById('photo-modi').classList.add('in'));
+
+    // Quote slots appear — show first quote in each slot
+    after(600, () => {
+      const slot1 = document.getElementById('slot1');
+      slot1.classList.add('in');
+      document.getElementById('q1').classList.add('active');
+    });
+    after(1100, () => {
+      const slot2 = document.getElementById('slot2');
+      slot2.classList.add('in');
+      document.getElementById('q2').classList.add('active');
+    });
+
+    // Ticker in
+    after(1800, () => ticker.classList.add('in'));
+
+    // ── At 12s from page load (≈ 4.7s after act3 starts):
+    //    begin rotating quotes every 5 seconds continuously
+    after(4700, () => startRotation());
+  });
+});
+
+// ── QUOTE ROTATION ─────────────────────────────────────────
+function rotateSlot(slotData) {
+  const panels   = slotData.panels;
+  const oldIndex = slotData.current;
+  const newIndex = (oldIndex + 1) % panels.length;
+
+  const oldPanel = document.getElementById(panels[oldIndex]);
+  const newPanel = document.getElementById(panels[newIndex]);
+
+  // Fade out old
+  oldPanel.classList.remove('active');
+
+  // Fade in new after a brief crossfade gap
+  after(500, () => {
+    newPanel.classList.add('active');
+    slotData.current = newIndex;
+  });
+}
+
+function startRotation() {
+  // Rotate both slots, offset by 2.5s so they don't change at same time
+  setInterval(() => rotateSlot(quotes[0]), 5000);
+  after(2500, () => {
+    setInterval(() => rotateSlot(quotes[1]), 5000);
+  });
+}
+</script>
+</body>
+</html>
